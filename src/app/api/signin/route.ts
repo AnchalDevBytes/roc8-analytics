@@ -45,7 +45,8 @@ export async function POST(req: NextRequest) {
                 success: false, message: "Invalid password",
             })
         }
-
+        console.log(isPasswordCorrect);
+        
         const token = await generatedToken(user);
 
         const signinUser = await prisma.user.findUnique({

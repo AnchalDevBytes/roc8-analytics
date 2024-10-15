@@ -12,6 +12,7 @@ export async function GET() {
             path: "/",
             expires: new Date(0),
         });
+        return response;
     } catch (error) {
         return NextResponse.json({
             success: false, message: "Failed to logout"

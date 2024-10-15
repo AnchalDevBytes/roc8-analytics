@@ -1,6 +1,7 @@
 import { generateToken } from "@/helpers/generateToken";
 import { prisma } from "@/server/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import bcrypt from "bcrypt";
 
 interface SignupRequestBodyInterface {
     name: string;
@@ -38,11 +39,13 @@ export async function POST(req: NextRequest) {
             });
         }
 
+        const hashedPassword = await bcrypt.hash(password, 10);
+
         const user = await prisma.user.create({
             data : {
                 name,
                 email,
-                password
+                password : hashedPassword,
             },
             select : {
                 id: true,
