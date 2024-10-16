@@ -20,4 +20,18 @@ model User {
   password   String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  usages     Usage[]
+}
+
+model Usage {
+  id        Int      @id             @default(autoincrement())
+  feature   String
+  hours     Float
+  date      DateTime
+  age       Int
+  gender    String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
 }
