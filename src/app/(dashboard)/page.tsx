@@ -1,4 +1,3 @@
-// HomePage.tsx
 "use client";
 import { BarChart, LineChart } from '@/components';
 import React, { useState } from 'react';
@@ -15,7 +14,7 @@ const HomePage = () => {
   return (
     <div className='w-full min-h-screen py-10 px-5 bg-teal-50 flex flex-col lg:flex-row items-center lg:justify-between lg:gap-20 lg:p-32'>
       <div className='w-full lg:w-1/2 h-full items-center justify-center flex'>
-      <BarChart onBarClick={handleBarClick} />
+        <BarChart onBarClick={handleBarClick} />
       </div>
       <div className='w-full lg:w-1/2 h-full items-center justify-center flex'>
         <LineChart feature={selectedFeature} data={lineData} />
