@@ -3,10 +3,11 @@ import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 
 interface BarChartProps {
+  data: { label: string; value: number }[];
   onBarClick: (feature: string, data: number[]) => void;
 }
 
-const BarChart: React.FC<BarChartProps> = ({ onBarClick }) => {
+const BarChart: React.FC<BarChartProps> = ({ data, onBarClick }) => {
   const chartRef = useRef<HTMLCanvasElement | null>(null);
   let myChart: Chart | null = null;
 
@@ -22,11 +23,11 @@ const BarChart: React.FC<BarChartProps> = ({ onBarClick }) => {
         myChart = new Chart(ctx, {
           type: 'bar',
           data: {
-            labels: ['Feature A', 'Feature B', 'Feature C', 'Feature D', 'Feature E', 'Feature F'],
+            labels: data.map(item => item.label),
             datasets: [
               {
                 label: 'Time Spent (hours)',
-                data: [12, 19, 3, 5, 2, 7],
+                data: data.map(item => item.value),
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 2,
@@ -38,7 +39,7 @@ const BarChart: React.FC<BarChartProps> = ({ onBarClick }) => {
             indexAxis: 'y',
             plugins: {
               legend: {
-                position: 'top',
+                display: false,
               },
               title: {
                 display: true,
@@ -68,7 +69,7 @@ const BarChart: React.FC<BarChartProps> = ({ onBarClick }) => {
         myChart.destroy();
       }
     };
-  }, [onBarClick]);
+  }, [data, onBarClick]);
 
   return <div className='w-full h-full items-center justify-center'>
           <canvas ref={chartRef} />
