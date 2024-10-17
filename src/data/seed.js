@@ -1,74 +1,51 @@
-import { PrismaClient } from '@prisma/client';
-import fs from 'fs';
-import csv from 'csv-parser';
-import path from 'path';
+import fs from "fs";
+import csv from "csv-parser";
+import { PrismaClient } from "@prisma/client";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const prisma = new PrismaClient();
 
-async function main() {
-  const user = await prisma.user.create({
-    data: {
-      name: 'John Doe',
-      email: 'johnnn@example.com',
-      password: 'password123',
-    },
-  });
+// Get the directory name equivalent to __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-  const csvFilePath = path.join(process.cwd(), 'src', 'data', 'DataSheet.csv');
-  console.log(`CSV File Path: ${csvFilePath}`);
+async function seed() {
+  const results = [];
+  const filePath = path.resolve(__dirname, "../data/DataSheet.csv");
 
-  const records = [];
-
-  try {
-    await new Promise((resolve, reject) => {
-      fs.createReadStream(csvFilePath)
-        .pipe(csv({ skipEmptyLines: true, trim: true }))
-        .on('data', (row) => {
-          console.log('Row data:', row);
-          const record = {
-            feature: row.feature,
-            hours: parseFloat(row.hours),
-            date: new Date(row.date),
-            age: parseInt(row.age, 10),
-            gender: row.gender,
-          };
-
-          // Validate and push valid records
-          if (record.feature && !isNaN(record.hours) && record.date instanceof Date && !isNaN(record.age) && record.gender) {
-            records.push(record);
-          } else {
-            console.warn('Invalid record:', row); // Log invalid records
-          }
-        })
-        .on('end', resolve)
-        .on('error', reject);
-    });
-
-    for (const record of records) {
-      await prisma.usage.create({
-        data: {
-          feature: record.feature,
-          hours: record.hours,
-          date: record.date,
-          age: record.age,
-          gender: record.gender,
-          userId: user.id,
-        },
+  fs.createReadStream(filePath)
+    .pipe(csv())
+    .on('data', (data) => {
+      results.push({
+        date: new Date(data.Day),
+        ageGroup: data.Age,
+        gender: data.Gender,
+        featureA: parseInt(data.A, 10),
+        featureB: parseInt(data.B, 10),
+        featureC: parseInt(data.C, 10),
+        featureD: parseInt(data.D, 10),
+        featureE: parseInt(data.E, 10),
+        featureF: parseInt(data.F, 10),
       });
-    }
-
-    console.log('Data has been seeded successfully!');
-  } catch (error) {
-    console.error('Error reading CSV file:', error);
-    process.exit(1);
-  }
+    })
+    .on('end', async () => {
+      try {
+        for (const record of results) {
+          await prisma.featureData.create({
+            data: record,
+          });
+        }
+        console.log('Data seeding completed successfully.');
+      } catch (error) {
+        console.error('Error seeding data:', error);
+      } finally {
+        await prisma.$disconnect();
+      }
+    });
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+seed().catch((error) => {
+  console.error('Error in seed script:', error);
+  prisma.$disconnect();
+});

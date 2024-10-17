@@ -20,18 +20,19 @@ model User {
   password   String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  usages     Usage[]
 }
 
-model Usage {
-  id        Int      @id             @default(autoincrement())
-  feature   String
-  hours     Float
-  date      DateTime
-  age       Int
-  gender    String
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
+model FeatureData {
+  id         Int      @id @default(autoincrement())
+  date       DateTime
+  ageGroup   String
+  gender     String
+  featureA   Int
+  featureB   Int
+  featureC   Int
+  featureD   Int
+  featureE   Int
+  featureF   Int
 
-  createdAt DateTime @default(now())
+  @@index([date, ageGroup, gender])
 }
