@@ -4,6 +4,7 @@ import { fetchFilteredData } from '@/helpers/filterDataApi';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { IoShareOutline } from "react-icons/io5";
 
 const HomePage = () => {
   const router = useRouter();
@@ -85,54 +86,64 @@ const HomePage = () => {
   }, [searchParams]);
 
   return (
-    <div className='w-full min-h-screen py-10 px-5 bg-teal-50 flex flex-col items-center lg:justify-between lg:gap-20 lg:p-32'>
-      <div className="mb-10 flex flex-col lg:flex-row gap-4">
-        <input
-          type="date"
-          name="date"
-          value={filters.date}
-          onChange={handleFilterChange}
-          className="border p-2 rounded bg-teal-100 text-black"
-          placeholder="Select Date"
-        />
-        <select
-          name="ageGroup"
-          value={filters.ageGroup}
-          onChange={handleFilterChange}
-          className="border p-2 rounded bg-teal-100 text-black"
-        >
-          <option value="">Select Age Group</option>
-          <option value="15-25">15-25</option>
-          <option value=">25">{`26-35`}</option>
-        </select>
-        <select
-          name="gender"
-          value={filters.gender}
-          onChange={handleFilterChange}
-          className="border p-2 rounded bg-teal-100 text-black"
-        >
-          <option value="">Select Gender</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-        </select>
-      </div>
-      
-      <button
-        onClick={handleCopyUrl}
-        className="mb-5 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-      >
-        Copy Link
-      </button>
-
-      <div className='w-full flex flex-col lg:flex-row lg:gap-20'>
-        <div className='w-full lg:w-1/2 h-full items-center justify-center flex'>
-          <BarChart onBarClick={handleBarClick} data={barData} />
-        </div>
-        <div className='w-full lg:w-1/2 h-full items-center justify-center flex'>
-          <LineChart feature={selectedFeature} data={lineData} />
-        </div>
-      </div>
-    </div>
+     <div className="container mx-auto px-4 py-8 space-y-8 bg-emerald-200">
+     <div className="bg-white shadow rounded-lg p-4">
+       <div className="text-xl font-bold mb-4 text-emerald-300">Data Visualization Dashboard</div>
+       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+         <input
+            type="date"
+            name="date"
+            value={filters.date}
+            onChange={handleFilterChange}
+            className="border p-2 rounded bg-teal-100 text-black"
+            placeholder="Select Date"
+          />
+          <select
+            name="ageGroup"
+            value={filters.ageGroup}
+            onChange={handleFilterChange}
+            className="border p-2 rounded bg-teal-100 text-black"
+          >
+            <option value="">Select Age Group</option>
+            <option value="15-25">15-25</option>
+            <option value=">25">{`26-35`}</option>
+          </select>
+          <select
+            name="gender"
+            value={filters.gender}
+            onChange={handleFilterChange}
+            className="border p-2 rounded bg-teal-100 text-black"
+          >
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+          <button
+           onClick={handleCopyUrl}
+           className="flex items-center text-muted-foreground text-sm text-teal-600 cursor-pointer hover:text-emerald-800 lg:hover:border-2 lg:hover:border-emerald-400 transition-all duration-300 lg:px-10 rounded-md"
+          >
+           <IoShareOutline className="w-4 h-4 mr-2" />
+           <span>Share this article</span>
+          </button>
+       </div>
+     </div>
+     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+       <div className="bg-white shadow rounded-lg p-4">
+         <div className="text-lg font-semibold mb-2 text-emerald-300">Feature Comparison</div>
+         <div className="h-96">
+           <BarChart onBarClick={handleBarClick} data={barData} />
+         </div>
+       </div>
+       <div className="bg-white shadow rounded-lg p-4">
+         <div className="text-lg font-semibold mb-2 text-emerald-300">
+           {selectedFeature ? `${selectedFeature} Trend` : 'Select a Feature'}
+         </div>
+         <div className="h-96">
+           <LineChart feature={selectedFeature} data={lineData} />
+         </div>
+       </div>
+     </div>
+   </div>
   );
 };
 
