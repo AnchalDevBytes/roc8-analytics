@@ -1,14 +1,25 @@
 "use client";
 import { BarChart, LineChart } from '@/components';
 import { fetchFilteredData } from '@/helpers/filterDataApi';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 const HomePage = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const initialFilters = {
+    date: searchParams.get('date') || '',
+    ageGroup: searchParams.get('ageGroup') || '',
+    gender: searchParams.get('gender') || '',
+  };
+
   const [selectedFeature, setSelectedFeature] = useState<string | null>(null);
   const [featureData, setFeatureData] = useState<{ [key : string] : number[] }>({});
   const [lineData, setLineData] = useState<number[]>([]);
   const [barData, setBarData] = useState<{ label: string; value: number }[]>([]);
-  const [filters, setFilters] = useState({ date: '', ageGroup: '', gender: '' });
+  const [filters, setFilters] = useState(initialFilters);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,8 +56,33 @@ const HomePage = () => {
 
   const handleFilterChange = (e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFilters((prev) => ({ ...prev, [name]: value }));
+    const newFilters = { ...filters, [name] : value };
+    setFilters(newFilters);
+    updateUrlWithFilters(newFilters);
   }
+
+  const updateUrlWithFilters = (
+    newFilters: {
+     date : string; 
+     ageGroup: string; 
+     gender: string
+  }) => {
+    const query = new URLSearchParams(newFilters).toString();
+    router.replace(`/?${query}`);
+  };
+
+  const handleCopyUrl = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url)
+    .then(() => toast.success('Link copied to clipboard!'))
+    .catch((error) => toast.error('Failed to copy link:', error));
+  }
+
+  useEffect(() => {
+    if (searchParams.toString()) {
+      setFilters(initialFilters);
+    }
+  }, [searchParams]);
 
   return (
     <div className='w-full min-h-screen py-10 px-5 bg-teal-50 flex flex-col items-center lg:justify-between lg:gap-20 lg:p-32'>
@@ -80,6 +116,13 @@ const HomePage = () => {
           <option value="Female">Female</option>
         </select>
       </div>
+      
+      <button
+        onClick={handleCopyUrl}
+        className="mb-5 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        Copy Link
+      </button>
 
       <div className='w-full flex flex-col lg:flex-row lg:gap-20'>
         <div className='w-full lg:w-1/2 h-full items-center justify-center flex'>
