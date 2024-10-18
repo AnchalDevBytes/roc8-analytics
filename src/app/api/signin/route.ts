@@ -12,7 +12,7 @@ interface SigninRequestBodyInterface {
 const generatedToken = async (user: { id: number; email: string; }) : Promise<string> => {
     try {
         return generateToken(user);
-    } catch (error) {
+    } catch (error) {  // eslint-disable-line @typescript-eslint/no-unused-vars
         throw new Error("Error occurred while generating token.");
     }
 }
@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
         response.headers.set("Location", "/");
         return response;
         
-    } catch (error) {
+    } catch (error) { 
         if(error instanceof Error) {
             return NextResponse.json(
                 { success: false, message: error.message }

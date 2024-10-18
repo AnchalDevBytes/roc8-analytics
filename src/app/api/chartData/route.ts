@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
         const ageGroup = url.searchParams.get("ageGroup");
         const gender = url.searchParams.get("gender");
 
-        const filter : any = {};
+        const filter : any = {};  // eslint-disable-line @typescript-eslint/no-explicit-any
 
         if(date) {
             const startOfDay = new Date(date);

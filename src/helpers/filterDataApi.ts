@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 
 export const fetchFilteredData = async (filters : { date: string; ageGroup: string; gender: string }) => {
     try {
-      const queryParams = new URLSearchParams(filters as any).toString();
+      const queryParams = new URLSearchParams(filters as any).toString();  // eslint-disable-line @typescript-eslint/no-explicit-any
       const { data } : AxiosResponse<chartDataResponseInterface> = await axiosClient.get(`/api/chartData?${queryParams}`);
 
       if(data.success !== true) {

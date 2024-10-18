@@ -12,7 +12,7 @@ interface SignupRequestBodyInterface {
 const generatedToken = async (user: { id: number; email: string; name: string | null }): Promise<string> => {
     try {
         return generateToken(user);
-    } catch (error) {
+    } catch (error) {  // eslint-disable-line @typescript-eslint/no-unused-vars
         throw new Error("Error occurred while generating token.");
     }
 }
