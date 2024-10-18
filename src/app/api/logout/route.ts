@@ -13,7 +13,8 @@ export async function GET() {
             expires: new Date(0),
         });
         return response;
-    } catch (error) {  // eslint-disable-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+        console.error(error);
         return NextResponse.json({
             success: false, message: "Failed to logout"
         });
