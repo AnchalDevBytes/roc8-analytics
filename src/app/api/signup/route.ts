@@ -13,6 +13,7 @@ const generatedToken = async (user: { id: number; email: string; name: string | 
     try {
         return generateToken(user);
     } catch (error) {
+        console.error(error);
         throw new Error("Error occurred while generating token.");
     }
 }

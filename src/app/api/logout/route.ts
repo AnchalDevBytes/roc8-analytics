@@ -14,6 +14,7 @@ export async function GET() {
         });
         return response;
     } catch (error) {
+        console.error(error);
         return NextResponse.json({
             success: false, message: "Failed to logout"
         });

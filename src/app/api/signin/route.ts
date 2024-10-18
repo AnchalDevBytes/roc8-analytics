@@ -13,6 +13,7 @@ const generatedToken = async (user: { id: number; email: string; }) : Promise<st
     try {
         return generateToken(user);
     } catch (error) {
+        console.error(error);
         throw new Error("Error occurred while generating token.");
     }
 }
@@ -81,7 +82,7 @@ export async function POST(req: NextRequest) {
         response.headers.set("Location", "/");
         return response;
         
-    } catch (error) {
+    } catch (error) { 
         if(error instanceof Error) {
             return NextResponse.json(
                 { success: false, message: error.message }
