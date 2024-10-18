@@ -4,7 +4,7 @@ import Chart from 'chart.js/auto';
 
 interface BarChartProps {
   data: { label: string; value: number }[];
-  onBarClick: (feature: string, data: number[]) => void;
+  onBarClick: (feature: string) => void;
 }
 
 const BarChart: React.FC<BarChartProps> = ({ data, onBarClick }) => {
@@ -55,8 +55,7 @@ const BarChart: React.FC<BarChartProps> = ({ data, onBarClick }) => {
               if (elements.length > 0) {
                 const index = elements[0].index;
                 const feature = myChart!.data.labels![index] as string;
-                const data = [Math.random() * 10, Math.random() * 20, Math.random() * 15, Math.random() * 25];
-                onBarClick(feature, data);
+                onBarClick(feature);
               }
             },
           },
@@ -72,7 +71,7 @@ const BarChart: React.FC<BarChartProps> = ({ data, onBarClick }) => {
   }, [data, onBarClick]);
 
   return <div className='w-full h-full items-center justify-center'>
-          <canvas ref={chartRef} />
+          <canvas className='w-full h-full' ref={chartRef} />
         </div>;
 };
 

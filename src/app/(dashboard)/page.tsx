@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 
 const HomePage = () => {
   const [selectedFeature, setSelectedFeature] = useState<string | null>(null);
+  const [featureData, setFeatureData] = useState<{ [key : string] : number[] }>({});
   const [lineData, setLineData] = useState<number[]>([]);
   const [barData, setBarData] = useState<{ label: string; value: number }[]>([]);
   const [filters, setFilters] = useState({ date: '', ageGroup: '', gender: '' });
@@ -22,14 +23,24 @@ const HomePage = () => {
           { label: 'Feature F', value: data.reduce((acc, item) => acc + item.featureF, 0) },
         ];
         setBarData(transformedData);
+
+        const originalData = {
+          'Feature A': data.map(item => item.featureA),
+          'Feature B': data.map(item => item.featureB),
+          'Feature C': data.map(item => item.featureC),
+          'Feature D': data.map(item => item.featureD),
+          'Feature E': data.map(item => item.featureE),
+          'Feature F': data.map(item => item.featureF),
+        };
+        setFeatureData(originalData);
       }
     };
     fetchData();
   },[filters]);
 
-  const handleBarClick = (feature: string, data: number[]) => {
+  const handleBarClick = (feature: string) => {
     setSelectedFeature(feature);
-    setLineData(data);
+    setLineData(featureData[feature] || []);
   };
 
   const handleFilterChange = (e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
