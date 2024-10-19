@@ -2,6 +2,34 @@ import { NextRequest, NextResponse } from "next/server";
 import { toast } from "react-toastify";
 
 export async function middleware(req: NextRequest) {
+    const params = req.nextUrl.searchParams;
+
+    const startDate = params.get('startDate');
+    const endDate = params.get('endDate');
+    const ageGroup = params.get('ageGroup');
+    const gender = params.get('gender');
+    const finalFilter = {
+        startDate : "",
+        endDate : "",
+        ageGroup : "",
+        gender : ""
+    }
+
+    if(startDate) {
+        finalFilter.startDate = startDate;
+    }
+    if(endDate) {
+        finalFilter.endDate = endDate;
+    }
+    if(ageGroup) {
+        finalFilter.ageGroup = ageGroup;
+    }
+    if(gender) {
+        finalFilter.gender = gender;
+    }
+
+    req.cookies.set("filters", JSON.stringify(finalFilter));
+    
     const path = req.nextUrl.pathname;
     const isPublicPath = path === "/signup" || path === "/signin";
     const token = req.cookies.get("token")?.value ?? "";
