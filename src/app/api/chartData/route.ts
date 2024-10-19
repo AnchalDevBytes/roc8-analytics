@@ -4,20 +4,21 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
     try {
         const url = new URL(req.url);
-        const date = url.searchParams.get("date");
+        const startDate = url.searchParams.get("startDate");
+        const endDate = url.searchParams.get("endDate");
         const ageGroup = url.searchParams.get("ageGroup");
         const gender = url.searchParams.get("gender");
 
         const filter : any = {};  // eslint-disable-line @typescript-eslint/no-explicit-any
 
-        if(date) {
-            const startOfDay = new Date(date);
-            startOfDay.setUTCHours(0, 0, 0, 0);
-            const endOfDay = new Date(date);
-            endOfDay.setUTCHours(23, 59, 59, 999);
+        if (startDate && endDate) {
+            const start = new Date(startDate);
+            start.setUTCHours(0, 0, 0, 0);
+            const end = new Date(endDate);
+            end.setUTCHours(23, 59, 59, 999);
             filter.date = {
-                gte: startOfDay,
-                lte: endOfDay
+                gte: start,
+                lte: end
             };
         }
         if(ageGroup) {

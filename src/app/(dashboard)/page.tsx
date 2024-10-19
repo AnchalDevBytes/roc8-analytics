@@ -11,7 +11,8 @@ const HomePage = () => {
   const searchParams = useSearchParams();
 
   const initialFilters = {
-    date: searchParams.get('date') || '',
+    startDate: searchParams.get('startDate') || '',
+    endDate: searchParams.get('endDate') || '',
     ageGroup: searchParams.get('ageGroup') || '',
     gender: searchParams.get('gender') || '',
   };
@@ -62,11 +63,11 @@ const HomePage = () => {
     updateUrlWithFilters(newFilters);
   }
 
-  const updateUrlWithFilters = (
-    newFilters: {
-     date : string; 
-     ageGroup: string; 
-     gender: string
+  const updateUrlWithFilters = (newFilters: {
+    startDate: string;
+    endDate: string;
+    ageGroup: string;
+    gender: string
   }) => {
     const query = new URLSearchParams(newFilters).toString();
     router.replace(`/?${query}`);
@@ -90,13 +91,21 @@ const HomePage = () => {
      <div className="bg-white shadow rounded-lg p-4">
        <div className="text-xl font-bold mb-4 text-emerald-300">Data Visualization Dashboard</div>
        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-         <input
-            type="date"
-            name="date"
-            value={filters.date}
-            onChange={handleFilterChange}
-            className="border p-2 rounded bg-teal-100 text-black"
-            placeholder="Select Date"
+          <input
+              type="date"
+              name="startDate"
+              value={filters.startDate}
+              onChange={handleFilterChange}
+              className="border p-2 rounded bg-teal-100 text-black"
+              placeholder="Start Date"
+          />
+          <input
+              type="date"
+              name="endDate"
+              value={filters.endDate}
+              onChange={handleFilterChange}
+              className="border p-2 rounded bg-teal-100 text-black"
+              placeholder="End Date"
           />
           <select
             name="ageGroup"
@@ -106,7 +115,7 @@ const HomePage = () => {
           >
             <option value="">Select Age Group</option>
             <option value="15-25">15-25</option>
-            <option value=">25">{`26-35`}</option>
+            <option value=">25">26-35</option>
           </select>
           <select
             name="gender"
