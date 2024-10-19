@@ -22,13 +22,15 @@ export async function GET(req: NextRequest) {
 
         if (startDate && endDate) {
             const start = new Date(startDate);
-            start.setUTCHours(0, 0, 0, 0);
             const end = new Date(endDate);
-            end.setUTCHours(23, 59, 59, 999);
-            filter.date = {
-                gte: start,
-                lte: end
-            };
+            if(!isNaN(start.getTime()) && !isNaN(end.getTime())) { 
+                start.setUTCHours(0, 0, 0, 0);
+                end.setUTCHours(23, 59, 59, 999);
+                filter.date = {
+                    gte: start,
+                    lte: end
+                };
+            }
         }
         if(ageGroup) {
             filter.ageGroup = ageGroup;
@@ -41,11 +43,11 @@ export async function GET(req: NextRequest) {
             where : filter,
         });
 
-        if (!data) {
+        if (!data || data.length === 0) {
             return NextResponse.json({
                 success: false,
                 message: "No data found for the given filter"
-            });
+            }, { status : 404 });
         }
 
         return NextResponse.json(
@@ -54,19 +56,19 @@ export async function GET(req: NextRequest) {
                 message: "Data filtered successfully!",
                 data : data
             },
-            {
-                status : 200
-            },
+            { status : 200 },
         );
 
     } catch (error) {
         if(error instanceof Error) {
             return NextResponse.json(
-                { success: false, message: error.message }
+                { success: false, message: error.message },
+                { status : 500 }
             );
         } else {
             return NextResponse.json(
-                { success: false, message: "Unknown error occurred" }
+                { success: false, message: "Unknown error occurred" },
+                { status: 500 }
             );
         }
     }
