@@ -6,16 +6,19 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { IoShareOutline } from "react-icons/io5";
+import Cookies from 'js-cookie';
 
 const HomePage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const previouslySavedFilters = Cookies.get('filters') ? JSON.parse(Cookies.get('filters') || "{}") : {};
+
   const initialFilters = {
-    startDate: searchParams.get('startDate') || '',
-    endDate: searchParams.get('endDate') || '',
-    ageGroup: searchParams.get('ageGroup') || '',
-    gender: searchParams.get('gender') || '',
+    startDate: previouslySavedFilters.startDate || searchParams.get('startDate') || '',
+    endDate: previouslySavedFilters.endDate || searchParams.get('endDate') || '',
+    ageGroup: previouslySavedFilters.ageGroup || searchParams.get('ageGroup') || '',
+    gender: previouslySavedFilters.gender || searchParams.get('gender') || '',
   };
 
   const [selectedFeature, setSelectedFeature] = useState<string | null>(null);
@@ -24,7 +27,6 @@ const HomePage = () => {
   const [barData, setBarData] = useState<{ label: string; value: number }[]>([]);
   const [filters, setFilters] = useState(initialFilters);
   const [dateLabels, setDateLabels] = useState<string[]>([]);
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,6 +56,15 @@ const HomePage = () => {
     fetchData();
   },[filters]);
 
+  useEffect(() => {
+    if (searchParams.toString()) {
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        ...initialFilters
+      }));
+    }
+  }, [searchParams]);
+
   const generateDateRange = (startDate: string, endDate: string, allDates: string[]) => {
     if (!startDate || !endDate) return allDates;
 
@@ -75,12 +86,17 @@ const HomePage = () => {
     setLineData(featureData[feature] || []);
   };
 
-  const handleFilterChange = (e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    const newFilters = { ...filters, [name] : value };
-    setFilters(newFilters);
-    updateUrlWithFilters(newFilters);
-  }
+  const handleFilterChange = ((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      const { name, value } = e.target;
+      const newFilters = { ...filters, [name]: value };
+        setFilters(newFilters);
+        updateUrlWithFilters(newFilters);
+        console.log(newFilters);
+        
+        Cookies.set('filters', JSON.stringify(newFilters), { expires: 7 });
+        return newFilters;
+  })
+  
 
   const updateUrlWithFilters = (newFilters: {
     startDate: string;
@@ -119,22 +135,28 @@ const HomePage = () => {
         </button>
        </div>
        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-          <input
-              type="date"
-              name="startDate"
-              value={filters.startDate}
-              onChange={handleFilterChange}
-              className="border p-2 rounded bg-teal-100 text-black"
-              placeholder="Start Date"
-          />
-          <input
-              type="date"
-              name="endDate"
-              value={filters.endDate}
-              onChange={handleFilterChange}
-              className="border p-2 rounded bg-teal-100 text-black"
-              placeholder="End Date"
-          />
+          <div className='relative flex flex-col gap-0'>
+          <label className='absolute -top-5 text-sm text-teal-700'>Start Date</label>
+            <input
+                type="date"
+                name="startDate"
+                value={filters.startDate}
+                onChange={handleFilterChange}
+                className="border p-2 rounded bg-teal-100 text-black"
+                placeholder="Start Date"
+            />
+          </div>
+          <div className='relative flex flex-col gap-0'>
+            <label className='absolute -top-5 text-sm text-teal-700'>End Date</label>
+            <input
+                type="date"
+                name="endDate"
+                value={filters.endDate}
+                onChange={handleFilterChange}
+                className="border p-2 rounded bg-teal-100 text-black"
+                placeholder="End Date"
+            />
+          </div>
           <select
             name="ageGroup"
             value={filters.ageGroup}
