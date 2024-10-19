@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Header } from "@/components";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,9 +31,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <main className="min-h-screen bg-teal-50">
+        <div className='flex flex-col min-h-screen w-full bg-background'>
+        <Header/>
+        <main className="min-h-screen pt-20 bg-emerald-200 lg:bg-emerald-50">
             {children}
         </main>
+    </div>
         <ToastContainer
             position="bottom-right"
             autoClose={5000}

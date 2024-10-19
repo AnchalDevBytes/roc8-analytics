@@ -12,7 +12,10 @@ const HomePage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const previouslySavedFilters = Cookies.get('filters') ? JSON.parse(Cookies.get('filters') || "{}") : {};
+  let previouslySavedFilters;
+  if(typeof window !== "undefined") {
+    previouslySavedFilters = Cookies.get('filters') ? JSON.parse(Cookies.get('filters') || "{}") : {};
+  }
 
   const initialFilters = {
     startDate: previouslySavedFilters.startDate || searchParams.get('startDate') || '',
@@ -91,12 +94,9 @@ const HomePage = () => {
       const newFilters = { ...filters, [name]: value };
         setFilters(newFilters);
         updateUrlWithFilters(newFilters);
-        console.log(newFilters);
-        
         Cookies.set('filters', JSON.stringify(newFilters), { expires: 7 });
         return newFilters;
   })
-  
 
   const updateUrlWithFilters = (newFilters: {
     startDate: string;
@@ -109,10 +109,13 @@ const HomePage = () => {
   };
 
   const handleCopyUrl = () => {
-    const url = window.location.href;
-    navigator.clipboard.writeText(url)
-    .then(() => toast.success('Link copied to clipboard!'))
-    .catch((error) => toast.error('Failed to copy link:', error));
+    let url;
+    if(typeof window !== undefined && window?.location?.href) {
+      url = window?.location?.href;
+      window?.navigator?.clipboard?.writeText(url)
+      .then(() => toast.success('Link copied to clipboard!'))
+      .catch((error) => toast.error('Failed to copy link:', error));
+    }
   }
 
   useEffect(() => {

@@ -54,12 +54,8 @@ const LineChart: React.FC<LineChartProps> = ({ feature, data, labels }) => {
                 pan: {
                   enabled: true,
                   mode: 'xy',
-                },
-                zoom: {
-                  enabled: true,
-                  mode: 'xy',
-                },
-              } as any, // Cast as any or _DeepPartialObject<ZoomOptions>
+                }
+              }
             },
             scales: {
               x: {

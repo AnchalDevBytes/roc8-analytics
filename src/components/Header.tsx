@@ -3,11 +3,13 @@ import { LogoutResponseInterface } from '@/interfaces/LogoutResponseInterface';
 import axiosClient from '@/lib/axiosClient';
 import { AxiosResponse } from 'axios';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 
 const Header = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const router = useRouter();
 
     const handleLogout = async () => {
         try {
@@ -15,7 +17,7 @@ const Header = () => {
             const response : AxiosResponse<LogoutResponseInterface> = await axiosClient.get("/api/logout");
             if(response.data.success) {
                 toast.success(response.data.message);
-                window.location.href = "/signin";
+               router.replace("/signin");
             } else {
                 const data : LogoutResponseInterface = response.data;
                 toast.error(data.message);
