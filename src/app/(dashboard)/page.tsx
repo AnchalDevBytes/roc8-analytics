@@ -1,4 +1,5 @@
 "use client";
+import { differenceInDays, eachDayOfInterval, format, parseISO } from 'date-fns';
 import { BarChart, LineChart } from '@/components';
 import { fetchFilteredData } from '@/helpers/filterDataApi';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -22,6 +23,8 @@ const HomePage = () => {
   const [lineData, setLineData] = useState<number[]>([]);
   const [barData, setBarData] = useState<{ label: string; value: number }[]>([]);
   const [filters, setFilters] = useState(initialFilters);
+  const [dateLabels, setDateLabels] = useState<string[]>([]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,8 +54,24 @@ const HomePage = () => {
     fetchData();
   },[filters]);
 
+  const generateDateRange = (startDate: string, endDate: string, allDates: string[]) => {
+    if (!startDate || !endDate) return allDates;
+
+    const start = parseISO(startDate);
+    const end = parseISO(endDate);
+
+    if (differenceInDays(end, start) < 0) return [];
+
+    return eachDayOfInterval({ start, end }).map(date => format(date, 'yyyy-MM-dd'));
+  };
+
   const handleBarClick = (feature: string) => {
     setSelectedFeature(feature);
+    const allAvailableDates = featureData[feature] ? featureData[feature].map((_, index) => {
+      return format(new Date().setDate(new Date().getDate() - index), 'yyyy-mm-dd');
+    }).reverse() : [];
+    const dateLabels = generateDateRange(filters.startDate, filters.endDate, allAvailableDates);
+    setDateLabels(dateLabels);
     setLineData(featureData[feature] || []);
   };
 
@@ -87,9 +106,18 @@ const HomePage = () => {
   }, [searchParams]);
 
   return (
-     <div className="container mx-auto px-4 py-8 space-y-8 bg-emerald-200">
+     <main className="container mx-auto px-4 py-8 space-y-8 bg-emerald-200">
      <div className="bg-white shadow rounded-lg p-4">
-       <div className="text-xl font-bold mb-4 text-emerald-300">Data Visualization Dashboard</div>
+       <div className='flex flex-col md:flex-row md:justify-between md:items-center'>
+        <h2 className="text-xl font-bold mb-4 text-emerald-300">Data Visualization Dashboard</h2>
+        <button
+           onClick={handleCopyUrl}
+           className="flex items-center pb-4 md:pb-2 text-muted-foreground text-sm text-teal-600 cursor-pointer hover:text-emerald-800 transition-all duration-300 lg:px-10 rounded-md"
+          >
+           <IoShareOutline className="w-4 h-4 mr-2" />
+           <span>Share this article</span>
+        </button>
+       </div>
        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
           <input
               type="date"
@@ -127,13 +155,6 @@ const HomePage = () => {
             <option value="Male">Male</option>
             <option value="Female">Female</option>
           </select>
-          <button
-           onClick={handleCopyUrl}
-           className="flex items-center text-muted-foreground text-sm text-teal-600 cursor-pointer hover:text-emerald-800 lg:hover:border-2 lg:hover:border-emerald-400 transition-all duration-300 lg:px-10 rounded-md"
-          >
-           <IoShareOutline className="w-4 h-4 mr-2" />
-           <span>Share this article</span>
-          </button>
        </div>
      </div>
      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -148,11 +169,11 @@ const HomePage = () => {
            {selectedFeature ? `${selectedFeature} Trend` : 'Select a Feature'}
          </div>
          <div className="h-96">
-           <LineChart feature={selectedFeature} data={lineData} />
+           <LineChart feature={selectedFeature} data={lineData} labels={dateLabels} />
          </div>
        </div>
      </div>
-   </div>
+   </main>
   );
 };
 

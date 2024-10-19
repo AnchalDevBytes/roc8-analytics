@@ -6,9 +6,10 @@ import zoomPlugin from 'chartjs-plugin-zoom';
 interface LineChartProps {
   feature: string | null;
   data: number[];
+  labels: string[];
 }
 
-const LineChart: React.FC<LineChartProps> = ({ feature, data }) => {
+const LineChart: React.FC<LineChartProps> = ({ feature, data, labels }) => {
   const chartRef = useRef<HTMLCanvasElement | null>(null);
   let myChart: Chart | null = null;
 
@@ -28,7 +29,7 @@ const LineChart: React.FC<LineChartProps> = ({ feature, data }) => {
         myChart = new Chart(ctx, {
           type: 'line',
           data: {
-            labels: data.map((feat) => JSON.stringify(feat)),
+            labels: labels || data.map((feat) => JSON.stringify(feat)),
             datasets: [
               {
                 label: `${feature} Time Trend`,
