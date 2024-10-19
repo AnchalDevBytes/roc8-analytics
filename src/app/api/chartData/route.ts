@@ -1,5 +1,7 @@
-import { prisma } from "@/server/prisma";
+import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+
+const prisma = new PrismaClient();
 
 interface Filter {
     date?: {
