@@ -11,7 +11,7 @@ export const fetchFilteredData = async (filters : {
 }) => {
     try {
       const queryParams = new URLSearchParams(filters).toString();
-      const { data } : AxiosResponse<chartDataResponseInterface> = await axiosClient.get(`/api/chartData?${queryParams}`);
+      const { data } : AxiosResponse<chartDataResponseInterface> = await axiosClient.get(`/api/chartdata?${queryParams}`);
 
       if(data.success !== true) {
         toast.error(data.message);
