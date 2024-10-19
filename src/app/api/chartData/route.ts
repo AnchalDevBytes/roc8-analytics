@@ -1,6 +1,15 @@
 import { prisma } from "@/server/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
+interface Filter {
+    date?: {
+        gte: Date;
+        lte: Date;
+    };
+    ageGroup?: string;
+    gender?: string;
+}
+
 export async function GET(req: NextRequest) {
     try {
         const url = new URL(req.url);
@@ -9,7 +18,7 @@ export async function GET(req: NextRequest) {
         const ageGroup = url.searchParams.get("ageGroup");
         const gender = url.searchParams.get("gender");
 
-        const filter : any = {};  // eslint-disable-line @typescript-eslint/no-explicit-any
+        const filter : Filter = {};
 
         if (startDate && endDate) {
             const start = new Date(startDate);

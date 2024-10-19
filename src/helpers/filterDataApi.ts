@@ -10,7 +10,7 @@ export const fetchFilteredData = async (filters : {
     gender: string 
 }) => {
     try {
-      const queryParams = new URLSearchParams(filters as any).toString();  // eslint-disable-line @typescript-eslint/no-explicit-any
+      const queryParams = new URLSearchParams(filters).toString();
       const { data } : AxiosResponse<chartDataResponseInterface> = await axiosClient.get(`/api/chartData?${queryParams}`);
 
       if(data.success !== true) {
