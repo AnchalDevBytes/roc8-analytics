@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect, useRef } from 'react';
-import Chart from 'chart.js/auto';
-import zoomPlugin from 'chartjs-plugin-zoom';
+import React, { useEffect, useRef } from "react";
+import Chart from "chart.js/auto";
+import zoomPlugin from "chartjs-plugin-zoom";
 
 interface LineChartProps {
   feature: string | null;
@@ -11,31 +11,33 @@ interface LineChartProps {
 
 const LineChart: React.FC<LineChartProps> = ({ feature, data, labels }) => {
   const chartRef = useRef<HTMLCanvasElement | null>(null);
-  let myChart: Chart | null = null;
+  const chartInstance = useRef<Chart | null>(null);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     Chart.register(zoomPlugin);
 
     if (!feature || data.length === 0) return;
-    
+
     if (chartRef.current) {
-      const ctx = chartRef.current.getContext('2d');
-      
+      const ctx = chartRef.current.getContext("2d");
+
       if (ctx) {
-        if (myChart) {
-          myChart.destroy();
+        if (chartInstance.current) {
+          chartInstance.current.destroy();
         }
 
-        myChart = new Chart(ctx, {
-          type: 'line',
+        chartInstance.current = new Chart(ctx, {
+          type: "line",
           data: {
             labels: labels || data.map((feat) => JSON.stringify(feat)),
             datasets: [
               {
                 label: `${feature} Time Trend`,
                 data: data,
-                backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                borderColor: 'rgba(153, 102, 255, 1)',
+                backgroundColor: "rgba(153, 102, 255, 0.2)",
+                borderColor: "rgba(153, 102, 255, 1)",
                 borderWidth: 1,
               },
             ],
@@ -44,7 +46,7 @@ const LineChart: React.FC<LineChartProps> = ({ feature, data, labels }) => {
             responsive: true,
             plugins: {
               legend: {
-                position: 'top',
+                position: "top",
               },
               title: {
                 display: true,
@@ -53,9 +55,9 @@ const LineChart: React.FC<LineChartProps> = ({ feature, data, labels }) => {
               zoom: {
                 pan: {
                   enabled: true,
-                  mode: 'xy',
-                }
-              }
+                  mode: "xy",
+                },
+              },
             },
             scales: {
               x: {
@@ -64,15 +66,15 @@ const LineChart: React.FC<LineChartProps> = ({ feature, data, labels }) => {
             },
           },
         });
-        
       }
     }
 
     return () => {
-      if (myChart) {
-        myChart.destroy();
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [feature, data]);
 
   return <canvas ref={chartRef} className="w-full h-64" />;

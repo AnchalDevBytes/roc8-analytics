@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect, useRef } from 'react';
-import Chart from 'chart.js/auto';
+import React, { useEffect, useRef } from "react";
+import Chart from "chart.js/auto";
 
 interface BarChartProps {
   data: { label: string; value: number }[];
@@ -9,41 +9,43 @@ interface BarChartProps {
 
 const BarChart: React.FC<BarChartProps> = ({ data, onBarClick }) => {
   const chartRef = useRef<HTMLCanvasElement | null>(null);
-  let myChart: Chart | null = null;
+  const chartInstance = useRef<Chart | null>(null); // Persistent chart instance
 
   useEffect(() => {
+    if (typeof window === "undefined") return; // Ensure it's client-side
+
     if (chartRef.current) {
-      const ctx = chartRef.current.getContext('2d');
-      
+      const ctx = chartRef.current.getContext("2d");
+
       if (ctx) {
-        if (myChart) {
-          myChart.destroy();
+        if (chartInstance.current) {
+          chartInstance.current.destroy();
         }
 
-        myChart = new Chart(ctx, {
-          type: 'bar',
+        chartInstance.current = new Chart(ctx, {
+          type: "bar",
           data: {
-            labels: data.map(item => item.label),
+            labels: data.map((item) => item.label),
             datasets: [
               {
-                label: 'Time Spent (hours)',
-                data: data.map(item => item.value),
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
+                label: "Time Spent (hours)",
+                data: data.map((item) => item.value),
+                backgroundColor: "rgba(75, 192, 192, 0.2)",
+                borderColor: "rgba(75, 192, 192, 1)",
                 borderWidth: 2,
               },
             ],
           },
           options: {
             responsive: true,
-            indexAxis: 'y',
+            indexAxis: "y",
             plugins: {
               legend: {
                 display: false,
               },
               title: {
                 display: true,
-                text: 'Feature Usage in Hours',
+                text: "Feature Usage in Hours",
               },
             },
             scales: {
@@ -52,9 +54,11 @@ const BarChart: React.FC<BarChartProps> = ({ data, onBarClick }) => {
               },
             },
             onClick: (event, elements) => {
-              if (elements.length > 0) {
+              if (elements.length > 0 && chartInstance.current) {
                 const index = elements[0].index;
-                const feature = myChart!.data.labels![index] as string;
+                const feature = chartInstance.current.data.labels![
+                  index
+                ] as string;
                 onBarClick(feature);
               }
             },
@@ -64,15 +68,17 @@ const BarChart: React.FC<BarChartProps> = ({ data, onBarClick }) => {
     }
 
     return () => {
-      if (myChart) {
-        myChart.destroy();
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
       }
     };
   }, [data, onBarClick]);
 
-  return <div className='w-full h-full items-center justify-center'>
-          <canvas className='w-full h-full' ref={chartRef} />
-        </div>;
+  return (
+    <div className="w-full h-full items-center justify-center">
+      <canvas className="w-full h-full" ref={chartRef} />
+    </div>
+  );
 };
 
 export default BarChart;
