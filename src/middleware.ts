@@ -3,7 +3,6 @@ import { toast } from "react-toastify";
 
 export async function middleware(req: NextRequest) {
   const params = req.nextUrl.searchParams;
-  const response = NextResponse.next();
 
   const startDate = params.get("startDate");
   const endDate = params.get("endDate");
@@ -29,22 +28,21 @@ export async function middleware(req: NextRequest) {
     finalFilter.gender = gender;
   }
 
-  response.cookies.set("filters", JSON.stringify(finalFilter));
-
   const path = req.nextUrl.pathname;
   const isPublicPath = path === "/signup" || path === "/signin";
   const token = req.cookies.get("token")?.value ?? "";
 
   if (!token && !isPublicPath) {
     toast.error("Unauthorized");
+    NextResponse.next().cookies.set("filters", JSON.stringify(finalFilter));
     return NextResponse.redirect(new URL("/signin", req.nextUrl));
   }
 
   if (token && isPublicPath) {
     toast.error("You can not move to signin or signup without logout");
+    NextResponse.next().cookies.set("filters", JSON.stringify(finalFilter));
     return NextResponse.redirect(new URL("/", req.nextUrl));
   }
-  return response;
 }
 
 export const config = {
