@@ -35,7 +35,7 @@ const Header = () => {
   };
 
   return (
-    <div className="absolute top-0 w-full rounded-b-md px-5 lg:px-[30%] h-16 flex items-center justify-between shadow bg-teal-50 text-black">
+    <div className="absolute top-0 w-full rounded-b-md px-5 lg:px-[10%] h-16 flex items-center justify-between shadow bg-teal-50 text-black">
       <Link
         href={"/"}
         className="text-2xl font-bold md:tracking-wider cursor-pointer"

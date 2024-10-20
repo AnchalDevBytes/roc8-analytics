@@ -175,7 +175,7 @@ const HomePage = () => {
   };
 
   return (
-    <main className="container mx-auto px-4 py-8 space-y-8 bg-emerald-200">
+    <main className="container mx-auto px-4 mt-20 lg:mt-28 py-8 space-y-8 bg-emerald-200">
       <div className="bg-white shadow rounded-lg p-4">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center">
           <h2 className="text-xl font-bold mb-4 text-emerald-300">

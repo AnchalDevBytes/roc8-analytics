@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { toast } from "react-toastify";
 
 export async function middleware(req: NextRequest) {
   const params = req.nextUrl.searchParams;
@@ -33,16 +32,22 @@ export async function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value ?? "";
 
   if (!token && !isPublicPath) {
-    toast.error("Unauthorized");
-    NextResponse.next().cookies.set("filters", JSON.stringify(finalFilter));
-    return NextResponse.redirect(new URL("/signin", req.nextUrl));
+    const response = NextResponse.redirect(new URL("/signin", req.nextUrl));
+    response.cookies.set("filters", JSON.stringify(finalFilter), {
+      path: "/",
+      httpOnly: false,
+      maxAge: 60 * 60 * 24 * 7,
+    });
+    return response;
   }
 
   if (token && isPublicPath) {
-    toast.error("You can not move to signin or signup without logout");
-    NextResponse.next().cookies.set("filters", JSON.stringify(finalFilter));
-    return NextResponse.redirect(new URL("/", req.nextUrl));
+      const response = NextResponse.redirect(new URL("/", req.nextUrl));
+      response.cookies.set("filters", JSON.stringify(finalFilter));
+      return response;
   }
+
+  return NextResponse.next();
 }
 
 export const config = {

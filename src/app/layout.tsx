@@ -34,7 +34,7 @@ export default function RootLayout({
       >
         <div className="flex flex-col min-h-screen w-full bg-background">
           <Header />
-          <main className="min-h-screen pt-20 bg-emerald-200 lg:bg-emerald-50">
+          <main className="min-h-screen w-full bg-emerald-200 lg:bg-emerald-50">
             <SuspenseProvider>{children}</SuspenseProvider>
           </main>
         </div>
