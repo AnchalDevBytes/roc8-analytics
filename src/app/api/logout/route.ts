@@ -12,6 +12,9 @@ export async function GET() {
             path: "/",
             expires: new Date(0),
         });
+        
+        response.headers.set("Location", "/signin");
+
         return response;
     } catch (error) {
         console.error(error);
