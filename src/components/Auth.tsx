@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 import axiosClient from "@/lib/axiosClient";
 import { AxiosResponse } from "axios";
 import { SignupResponseDataInterface } from "@/interfaces/SignupResponseDataInterface";
-import { useRouter } from "next/navigation";
 import { SigninResponseDataInterface } from "@/interfaces/SigninResponseDataInterface";
 
 interface UserData {
@@ -27,8 +26,6 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
     password: "",
   });
   const [isLoading, setIsLoading] = useState({ signup: false, signin: false });
-
-  const router = useRouter();
 
   const signUpChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setSignupInput({
@@ -54,7 +51,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
         toast.error(data.message);
       } else {
         toast.success(data.message || "User signed up successfully!");
-        router.replace("/");
+        window.location.href = "/";
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -77,7 +74,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
         toast.error(data.message);
       } else {
         toast.success(data.message || "User signed in successfully!");
-        router.replace("/");
+        window.location.href = "/";
       }
     } catch (error) {
       if (error instanceof Error) {
