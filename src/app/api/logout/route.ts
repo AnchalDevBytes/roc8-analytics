@@ -6,13 +6,7 @@ export async function GET() {
             { success: true, message: "Loggedout successfully!" },
             { status: 200 },
         );
-        response.cookies.set("token", "", {
-            httpOnly: true,
-            secure: true,
-            path: "/",
-            expires: new Date(0),
-        });
-        
+        response.cookies.delete("token");
         response.headers.set("Location", "/signin");
 
         return response;
