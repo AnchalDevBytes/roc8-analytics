@@ -1,5 +1,4 @@
 "use client";
-
 import {
   differenceInDays,
   eachDayOfInterval,
@@ -13,6 +12,10 @@ import { toast } from "react-toastify";
 import { IoShareOutline } from "react-icons/io5";
 import Cookies from "js-cookie";
 import { fetchFilteredData } from "@/helpers/filterDataApi";
+
+const Header = dynamic(() => import("@/components/Header"), {
+  ssr: false,
+});
 
 const LineChart = dynamic(() => import("@/components/LineChart"), {
   suspense: true,
@@ -175,96 +178,99 @@ const HomePage = () => {
   };
 
   return (
-    <main className="container mx-auto px-4 mt-20 lg:mt-28 py-8 space-y-8 bg-emerald-200">
-      <div className="bg-white shadow rounded-lg p-4">
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center">
-          <h2 className="text-xl font-bold mb-4 text-emerald-300">
-            Data Visualization Dashboard
-          </h2>
-          <button
-            onClick={handleCopyUrl}
-            className="flex items-center pb-4 md:pb-2 text-muted-foreground text-sm text-teal-600 cursor-pointer hover:text-emerald-800 transition-all duration-300 lg:px-10 rounded-md"
-          >
-            <IoShareOutline className="w-4 h-4 mr-2" />
-            <span>Share this article</span>
-          </button>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-          <div className="relative flex flex-col gap-0">
-            <label className="absolute -top-5 text-sm text-teal-700">
-              Start Date
-            </label>
-            <input
-              type="date"
-              name="startDate"
-              value={filters.startDate}
-              onChange={handleFilterChange}
-              className="border p-2 rounded bg-teal-100 text-black"
-              placeholder="Start Date"
-            />
-          </div>
-          <div className="relative flex flex-col gap-0">
-            <label className="absolute -top-5 text-sm text-teal-700">
-              End Date
-            </label>
-            <input
-              type="date"
-              name="endDate"
-              value={filters.endDate}
-              onChange={handleFilterChange}
-              className="border p-2 rounded bg-teal-100 text-black"
-              placeholder="End Date"
-            />
-          </div>
-          <select
-            name="ageGroup"
-            value={filters.ageGroup}
-            onChange={handleFilterChange}
-            className="border p-2 rounded bg-teal-100 text-black"
-          >
-            <option value="">Select Age Group</option>
-            <option value="15-25">15-25</option>
-            <option value=">25">26-35</option>
-          </select>
-          <select
-            name="gender"
-            value={filters.gender}
-            onChange={handleFilterChange}
-            className="border p-2 rounded bg-teal-100 text-black"
-          >
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-          </select>
-        </div>
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div className="flex flex-col h-full w-full bg-emerald-200 lg:bg-emerald-50">
+      <Header />
+      <main className="container mx-auto px-4 mt-16 lg:mt-28 py-8 space-y-8 bg-emerald-200">
         <div className="bg-white shadow rounded-lg p-4">
-          <div className="text-lg font-semibold mb-2 text-emerald-300">
-            Feature Comparison
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center">
+            <h2 className="text-xl font-bold mb-4 text-emerald-300">
+              Data Visualization Dashboard
+            </h2>
+            <button
+              onClick={handleCopyUrl}
+              className="flex items-center pb-4 md:pb-2 text-muted-foreground text-sm text-teal-600 cursor-pointer hover:text-emerald-800 transition-all duration-300 lg:px-10 rounded-md"
+            >
+              <IoShareOutline className="w-4 h-4 mr-2" />
+              <span>Share this article</span>
+            </button>
           </div>
-          <div className="h-96">
-            <Suspense fallback={<div>Loading Bar Chart...</div>}>
-              <BarChart onBarClick={handleBarClick} data={barData} />
-            </Suspense>
-          </div>
-        </div>
-        <div className="bg-white shadow rounded-lg p-4">
-          <div className="text-lg font-semibold mb-2 text-emerald-300">
-            Trends
-          </div>
-          <div className="h-96">
-            <Suspense fallback={<div>Loading Line Chart...</div>}>
-              <LineChart
-                feature={selectedFeature}
-                labels={dateLabels}
-                data={lineData}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+            <div className="relative flex flex-col gap-0">
+              <label className="absolute -top-5 text-sm text-teal-700">
+                Start Date
+              </label>
+              <input
+                type="date"
+                name="startDate"
+                value={filters.startDate}
+                onChange={handleFilterChange}
+                className="border p-2 rounded bg-teal-100 text-black"
+                placeholder="Start Date"
               />
-            </Suspense>
+            </div>
+            <div className="relative flex flex-col gap-0">
+              <label className="absolute -top-5 text-sm text-teal-700">
+                End Date
+              </label>
+              <input
+                type="date"
+                name="endDate"
+                value={filters.endDate}
+                onChange={handleFilterChange}
+                className="border p-2 rounded bg-teal-100 text-black"
+                placeholder="End Date"
+              />
+            </div>
+            <select
+              name="ageGroup"
+              value={filters.ageGroup}
+              onChange={handleFilterChange}
+              className="border p-2 rounded bg-teal-100 text-black"
+            >
+              <option value="">Select Age Group</option>
+              <option value="15-25">15-25</option>
+              <option value=">25">26-35</option>
+            </select>
+            <select
+              name="gender"
+              value={filters.gender}
+              onChange={handleFilterChange}
+              className="border p-2 rounded bg-teal-100 text-black"
+            >
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
           </div>
         </div>
-      </div>
-    </main>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="bg-white shadow rounded-lg p-4">
+            <div className="text-lg font-semibold mb-2 text-emerald-300">
+              Feature Comparison
+            </div>
+            <div className="h-96">
+              <Suspense fallback={<div>Loading Bar Chart...</div>}>
+                <BarChart onBarClick={handleBarClick} data={barData} />
+              </Suspense>
+            </div>
+          </div>
+          <div className="bg-white shadow rounded-lg p-4">
+            <div className="text-lg font-semibold mb-2 text-emerald-300">
+              Trends
+            </div>
+            <div className="h-96">
+              <Suspense fallback={<div>Loading Line Chart...</div>}>
+                <LineChart
+                  feature={selectedFeature}
+                  labels={dateLabels}
+                  data={lineData}
+                />
+              </Suspense>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
   );
 };
 

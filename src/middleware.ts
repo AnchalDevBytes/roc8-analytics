@@ -43,7 +43,11 @@ export async function middleware(req: NextRequest) {
 
   if (token && isPublicPath) {
       const response = NextResponse.redirect(new URL("/", req.nextUrl));
-      response.cookies.set("filters", JSON.stringify(finalFilter));
+      response.cookies.set("filters", JSON.stringify(finalFilter), {
+        path: "/",
+        httpOnly: false,
+        maxAge: 60 * 60 * 24 * 7,
+      });
       return response;
   }
 

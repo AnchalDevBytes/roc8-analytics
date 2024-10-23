@@ -16,7 +16,9 @@ const Header = () => {
         await axiosClient.get("/api/logout");
       if (response.data.success) {
         toast.success(response.data.message);
-        window.location.href = "/signin";
+        if(typeof window !== "undefined" && window?.location?.href) {
+          window.location.href = "/signin";
+        }
       } else {
         const data: LogoutResponseInterface = response.data;
         toast.error(data.message);
@@ -33,7 +35,7 @@ const Header = () => {
   };
 
   return (
-    <div className="absolute top-0 w-full rounded-b-md px-5 lg:px-[10%] h-16 flex items-center justify-between shadow bg-teal-50 text-black">
+    <div className="absolute top-0 w-full px-5 lg:px-[10%] h-16 flex items-center justify-between shadow bg-teal-50 text-black">
       <Link
         href={"/"}
         className="text-2xl font-bold md:tracking-wider cursor-pointer"
